@@ -1,0 +1,171 @@
+<!--Third Party-->
+<script src="/SiteAssets/ReportsSubscription/angular.js"></script>
+<link rel="stylesheet" href="/SiteAssets/ReportsSubscription/Subscriptions/css/bootstrap.min.css">
+<link rel="stylesheet" href="/SiteAssets/ReportsSubscription/Subscriptions/css/style.css">
+<!--Application-->
+<script src="/SiteAssets/ReportsSubscription/Subscriptions/Subscriptions.js"></script>
+<script src="/SiteAssets/ReportsSubscription/spcrud.js"></script>
+<!-- <link rel="stylesheet" href="/SiteAssets/RnR/Stocks/Stock%20Approval/stockApproval.css"> -->
+<!--Main-->
+<div ng-app="ReportSubscriptionApp">
+    <div ng-controller="ReportSubscriptionCtl">
+		<section class="topSection">
+			<div class="container">
+				<div class="mainBox">
+					<div class="row">
+
+						<div class="col-md-12">
+							 <span style="margin-left: 820px"><input ng-model="searchText" placeholder="Search" ng-change="Search(Sub)">
+								 
+							</span> 
+							 <h4 class="masterHeading">Report Subscription</h4>
+							<div class="row ItemRow">
+								<div class="col-md-3" ng-model="ItemForm">
+									<div class="formBox">
+                                        <div class="row">
+                                        <div class="col-md-12">
+										<div class="form-group">
+											<label class="pointFormLabel">Report Type</label><span style="color:red">*</span>										
+                        						    <select class="form-control pointFormText" ng-model="Sub.ReportType" >
+                                                        <option value="" selected="selected">-Select-</option>
+						                        	    <option value="Attendance">Attendance Report</option>
+							                            <option value="Timesheet">Timesheet Report</option>
+						                            </select>
+                                            </div>
+                                        </div>
+                                        <!--Add parameters to below div for timesheet report -->
+                                        <div class="col-md-12" id="Timesheet" ng-if="Sub.ReportType == 'Timesheet'">
+												<div class="form-group">
+                                                    <label class="pointFormLabel">Subscription Start Time</label>
+                                                    <span style="color:red">*</span>
+													<input type="date" class="form-control pointFormText" ng-model="Sub.SubscriptionStartDate" required />
+												</div>
+											</div>
+                                            <!-- <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="pointFormLabel">Report ID</label>
+                                                <input type="text" class="form-control pointFormText" ng-model="Sub.ReportID" />
+                                            </div>
+                                            </div> -->
+									
+											<!-- <div class="col-md-12">
+												<div class="form-group">
+													<label class="pointFormLabel">Subscription ID</label>
+													<span style="color:red">*</span>
+													<input type="number" class="form-control pointFormText" ng-model="" required/>
+												</div>
+											</div> -->
+											<div class="col-md-12">
+												<div class="form-group">
+													<label class="pointFormLabel">Frequency</label><span style="color:red">*</span>										
+						                        <select class="form-control pointFormText" ng-model="Sub.Frequency">
+                                                    <option value="" selected="selected">-Select-</option>
+							                        <!-- <option value="Annual">Annual</option> -->
+							                        <option value="Monthly">Monthly</option>
+                                                    <!-- <option value="Quaterly">Quaterly</option> -->
+                                                    <option value="Weekly">Weekly</option>
+							                        <option value="Daily">Daily</option>			
+						                         </select>
+												</div>
+                                            </div>
+                                             <div class="col-md-12" id="Frequency" ng-if="Sub.Frequency == 'Monthly'" || "Sub.ReportType == 'Weekly'">
+												<div class="form-group">
+                                                    <label class="pointFormLabel">Subscription Start Time</label>
+                                                    <span style="color:red">*</span>
+													<input type="date" class="form-control pointFormText" ng-model="Sub.SubscriptionStartDate" required />
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+                                                    <label class="pointFormLabel">Subscription Start Date</label>
+                                                    <span style="color:red">*</span>
+													<input type="date" class="form-control pointFormText" ng-model="Sub.SubscriptionStartDate" required />
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<label class="pointFormLabel">Subscription Expiry Date</label>
+													<span style="color:red">*</span>
+													<input type="date" class="form-control pointFormText" ng-model="Sub.SubscriptionExpiryDate" required />
+												</div>
+											</div>
+											</div>
+										
+										 
+										<input type="button" class="formSubmitBtn" id="AddButton" ng-click="AddProduct(Sub)" value="Add" ng-show="AddButton" />
+										<!-- <input type="button" id="SaveButton" class="formSubmitBtn" ng-click="UpdateItem(Sub)" value="Save" ng-show="SaveButton"/> -->
+										<input type="button" class="formSubmitBtn" ng-click="claer()" value="Clear" ng-show="ClearButton" />
+										<!-- <input type="button" class="formSubmitBtn" ng-click="claerEdit()" value="Clear" ng-show="ClearEditButton" /> -->
+									</div>
+								</div>
+								<div class="col-md-9">
+									<ul class="nav nav-tabs pointTabs">
+                                        <li><a href="#tab1">Subscribed Reports</a></li>
+                                    <!-- <li><a href="#tab2">Products For Approval</a></li> -->
+									</ul>
+									<div class="tab-content appraisalTabsContent">
+										<div id="tab1" class="tab-pane fade in active" style="overflow-y: scroll; height:300px;">
+											<table class="table itemTable" style="margin-bottom:15px;">
+												<thead>
+													<tr>
+														<th>
+															 <a style="color:white" href="#" ng-click="orderByField='SubscriptionID'; reverseSort = !reverseSort"> 
+                                                                  Subscription ID 
+                                                                   <span ng-show="orderByField == 'SubscriptionID'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort">v</span></span></a> 
+														</th>
+														<th>
+															 <a href="#" style="color:white" ng-click="orderByField='ReportID'; reverseSort = !reverseSort"> 
+                                                                  Report ID 
+                                                                   <span ng-show="orderByField == 'ReportID'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort">v</span></span></a> 
+         													
+														</th>
+														<th>
+															 <a href="#" style="color:white" ng-click="orderByField='SubscriptionDay'; reverseSort = !reverseSort"> 
+                                                                  Subscription Day 
+                                                                   <span ng-show="orderByField == 'SubscriptionDay'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort">v</span></span></a> 
+         													
+														</th>
+														<th>
+															 <a href="#" style="color:white" ng-click="orderByField='Subscription Start Date'; reverseSort = !reverseSort"> 
+                                                                  Subscription Start Date 
+                                                                   <span ng-show="orderByField == 'SubscriptionStartDate'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort">v</span></span></a> 
+         													
+														</th>
+														<th>
+															 <a href="#" style="color:white" ng-click="orderByField='SubscriptionExpiryDate'; reverseSort = !reverseSort"> 
+                                                                  Subscription Expiry Date 
+                                                             <span ng-show="orderByField == 'SubscriptionExpiryDate'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort">v</span></span></a> 
+         													
+														</th>
+														<th>Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr ng-repeat="Item in  SubscriptionListItems | orderBy:'-Modified' | orderBy:orderByField:reverseSort">
+														<td>{{Item.Subscription_x0020_ID}}</td>
+														<td>{{Item.Report_x0020_ID}}</td>
+														<td>{{Item.Subscription_x0020_Day}}</td>
+														<td>{{Item.Subcription_x0020_Start_x0020_Da}}</td>
+														<td>{{Item.Subscription_x0020_Expery_x0020_}}</td>
+																										
+														<td><span><i style="color:green" title="Edit" class="fa fa-pencil-square-o" ng-click="OnEdit(Sub)"></i></span>
+															<span><i style="color:red ;margin-left: 13px" title="Delete" class="fa fa-trash-o" ng-click="OnDelete(Sub)"></i></span>
+														</td>
+														
+													
+													</tr>
+													
+												</tbody>
+											</table>
+										</div>
+									
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section> 
+	</div>
+</div>
